@@ -11,26 +11,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      # Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # Run tests
       - name: Run tests
         run: npm test
 
-      # Comment on PR
       - name: Comment on PR
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -39,10 +35,9 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "✅ Workflow completed successfully!"
+              body: " Workflow completed successfully!"
             })
 
-      # Semantic Release
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2
         env:
